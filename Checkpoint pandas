@@ -1,0 +1,44 @@
+#1 Chargez l'ensemble de données.
+import pandas as pd
+data = pd.read_csv('STEG_BILLING_HISTORY.csv')
+data.head()
+
+#2 affichez les dix premières lignes.
+client_0_bills = data[:10]
+client_0_bills
+
+#3 Combien de lignes et de colonnes avons-nous dans cet ensemble de données ?
+data.shape
+
+#4 le type de données de la variable 'client_0_bills; Combien de fonctionnalités catégorielles sont présentes dans l'ensemble de données;
+#Combien d'espace mémoire l'ensemble de données consomme-t-il.
+data.info()
+
+#5  détecter d’éventuelles valeurs manquantes.
+data.isnull().sum()
+
+
+data['reading_remarque'] = data['reading_remarque'].fillna('no answer')
+#j'ai remplacer les valeurs manquantes par no answer parce qu'ils sont 
+#de type chaine de caractère et ne peuvent pas etre remplacer par la médiane ou la moyenne...
+
+data['counter_number'] = data['counter_number'].fillna(data['counter_number'].median())
+#J'ai remplacer ici par la médiane parceque nous avons ici des valeurs abberantes.
+
+#6 Exécutez une analyse descriptive sur les caractéristiques numériques (colonnes).
+data.describe(include='all')
+
+#7 Sélectionnez les enregistrements de factures pour le client avec un identifiant = 'train_Client_0'.
+client_records_2 = data.query("client_id == 'train_Client_0'")
+
+
+from sklearn.preprocessing import LabelEncoder
+
+# Création d'un encodeur
+le = LabelEncoder()
+
+# Transformation de la colonne 'counter_type'
+data['counter_type'] = le.fit_transform(data['counter_type'])
+
+
+data.drop(columns=['counter_statue'], inplace=True)
